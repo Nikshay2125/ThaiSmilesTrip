@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-03-25 02:13:20",
+    "type": "sent",
+    "from": "whatsapp:+14155238886",
+    "to": "whatsapp:+917982794922",
+    "body": "Please provide information in the following format:\n\n{\n  \"date\": \"(DD MMM YYYY)\",\n  \"guest_name\": \"\",\n  \"pax\": \"\",\n  \"flight_no\": \"Flight Number (if available, else NULL)\",\n  \"pickup_time\": \"(HH:MM AM/PM)\",\n  \"pickup_location\": \"\",\n  \"hotel_drop\": \"(if applicable, else NULL)\",\n  \"tour\": \"(if applicable, else NULL)\",\n  \"payment\": \"(if applicable, else NULL)\",\n  \"code\": \"\"\n}\n\nPlease fill in the values for each field.",
+    "sid": "SM5a873625010e5862a5cd84c23ee1b3c6"
+  },
+  {
+    "timestamp": "2025-03-24 20:43:25",
+    "type": "received",
+    "from": "whatsapp:+917982794922",
+    "to": "whatsapp:+14155238886",
+    "body": "Hi",
+    "sid": "SM3669e2b8d23d695d2b4467ade9afe243"
+  },
+  {
+    "timestamp": "2025-03-24 20:43:25",
+    "type": "received",
+    "from": "whatsapp:+917982794922",
+    "to": "whatsapp:+14155238886",
+    "body": "Hi",
+    "sid": "SM3669e2b8d23d695d2b4467ade9afe243"
+  }
+]
