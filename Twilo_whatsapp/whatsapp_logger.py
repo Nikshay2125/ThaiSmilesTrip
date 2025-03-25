@@ -2,14 +2,16 @@ from twilio.rest import Client
 from datetime import datetime
 import json
 import os
-import requests
 import time
 import re
+from datetime import timezone
 
 class WhatsAppClient:
     def __init__(self, account_sid, auth_token):
         self.client = Client(account_sid, auth_token)
         self.from_number = 'whatsapp:+14155238886'
+        self.start_time = datetime.now(timezone.utc)  # Store program start time with UTC timezone
+        self.last_message_sid = None  # Track the last message we've seen
         
         if not os.path.exists('logs'):
             os.makedirs('logs')
@@ -28,8 +30,8 @@ class WhatsAppClient:
         }
     
     def _log_message(self, message_data):
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        log_file = f"logs/whatsapp_{datetime.now().strftime('%Y-%m-%d')}.json"
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        log_file = f"logs/whatsapp_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
         
         logs = []
         if os.path.exists(log_file):
@@ -63,7 +65,7 @@ class WhatsAppClient:
             )
             
             message_data = {
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
                 "type": "sent",
                 "from": self.from_number,
                 "to": f"whatsapp:{to_number}",
@@ -78,7 +80,7 @@ class WhatsAppClient:
 
     def get_recent_message(self):
         """
-        Fetch the most recent incoming WhatsApp message
+        Fetch the most recent incoming WhatsApp message that arrived after program start
         
         Returns:
             dict: Message data containing timestamp, sender, body, etc. or None if no messages
@@ -91,16 +93,27 @@ class WhatsAppClient:
             
             if messages and messages[0].direction == 'inbound':
                 message = messages[0]
-                message_data = {
-                    "timestamp": message.date_sent.strftime("%Y-%m-%d %H:%M:%S"),
-                    "type": "received",
-                    "from": message.from_,
-                    "to": message.to,
-                    "body": message.body,
-                    "sid": message.sid
-                }
-                self._log_message(message_data)
-                return message_data
+                message_time = message.date_sent
+                
+                # Skip if we've already processed this message
+                if message.sid == self.last_message_sid:
+                    return None
+                
+                # Only process messages that arrived after program start
+                if message_time > self.start_time:
+                    message_data = {
+                        "timestamp": message_time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "type": "received",
+                        "from": message.from_,
+                        "to": message.to,
+                        "body": message.body,
+                        "sid": message.sid
+                    }
+                    self._log_message(message_data)
+                    print("\nReceived new message:")
+                    print(json.dumps(message_data, indent=2))
+                    self.last_message_sid = message.sid  # Update last processed message
+                    return message_data
             
             return None
                 
@@ -108,88 +121,25 @@ class WhatsAppClient:
             print(f"Error fetching messages: {str(e)}")
             return None
 
-    def check_message_format(self, message_body):
-        """Check if message contains required fields"""
-        required_keywords = list(self.required_fields.keys())
-        found_keywords = [word for word in required_keywords if word.lower() in message_body.lower()]
-        return len(found_keywords) >= len(required_keywords) * 0.5  # At least 50% of keywords should be present
-
-    def send_format_instructions(self, to_number):
-        """Send format instructions to user"""
-        format_message = "Please provide information in the following format:\n\n"
-        format_message += json.dumps(self.required_fields, indent=2)
-        format_message += "\n\nPlease fill in the values for each field."
-        self.send_message(to_number, format_message)
-
-    def parse_user_response(self, message_body):
-        """Try to parse user response into required format"""
-        try:
-            # Basic parsing - looking for key:value or key=value patterns
-            response_dict = {}
-            lines = message_body.split('\n')
-            for line in lines:
-                # Try to split on : or =
-                parts = re.split('[:|=]', line, maxsplit=1)
-                if len(parts) == 2:
-                    key = parts[0].strip().lower()
-                    value = parts[1].strip()
-                    if key in self.required_fields:
-                        response_dict[key] = value
-            return response_dict
-        except:
-            return None
-
-    def process_message(self):
-        """Main message processing logic"""
-        recent_message = self.get_recent_message()
-        if not recent_message:
-            return None
-
-        sender = recent_message['from']
-        message_body = recent_message['body']
-        sender_number = sender.replace('whatsapp:', '')
-
-        # Check if message follows required format
-        if not self.check_message_format(message_body):
-            self.send_format_instructions(sender_number)
-            return None
-
-        # Try to parse user response
-        parsed_response = self.parse_user_response(message_body)
-        if parsed_response:
-            # Send confirmation message
-            confirm_msg = "I received the following information:\n"
-            confirm_msg += json.dumps(parsed_response, indent=2)
-            confirm_msg += "\n\nIs this correct? Please reply with 'yes' or 'no'"
-            self.send_message(sender_number, confirm_msg)
-            
-            # Wait for confirmation
-            time.sleep(10)  # Wait for response
-            confirmation = self.get_recent_message()
-            if confirmation and confirmation['body'].lower().strip() == 'yes':
-                print("Booking confirmed:")
-                print(json.dumps(parsed_response, indent=2))
-            elif confirmation and confirmation['body'].lower().strip() == 'no':
-                self.send_message(sender_number, "Please provide the information again in the correct format.")
-                self.send_format_instructions(sender_number)
-
 def main():
-    print("WhatsApp Message Reader is running! 🚀")
+    print("WhatsApp Message Monitor is running! 🚀")
     print("Waiting for incoming messages...")
     
     account_sid = 'AC5c49c197045993c193f4a2fb10b7ee38'
     auth_token = '92c2d25859863139a87a6c235f66c4e0'
     whatsapp_client = WhatsAppClient(account_sid, auth_token)
     
-    processed_sids = {}
-    
     while True:
         try:
-            whatsapp_client.process_message()
+            message = whatsapp_client.get_recent_message()
+            if message:
+                # Here we'll just log the message, response handling will be in response_system.py
+                pass
+                
             time.sleep(10)
             
         except KeyboardInterrupt:
-            print("\nStopping WhatsApp Message Reader...")
+            print("\nStopping WhatsApp Message Monitor...")
             break
         except Exception as e:
             print(f"Error: {str(e)}")

@@ -1,0 +1,24 @@
+test_cases = [
+        # Standard format
+        """DATE:- 04 FEB
+        GUEST NAME : GUNJAN KEDAWAT
+        PAX:- 01 
+        Flights no:- 6E 6568
+        PICKUP TIME : 11.00 AM
+        HOTEL DROP : centara grand central ladprao Bangkok
+        PICKUP : BKK AIRPORT
+        Code - 29""",
+        
+        # Natural language format
+        """Hello, this is a booking confirmation for John Smith. 
+        He will be arriving on March 15th, 2024 on flight BA789. 
+        Please arrange pickup from Heathrow Airport at 2:30 PM. 
+        There will be 3 people in total. They'll be staying at the Ritz Hotel.
+        Booking reference: BOOK123.""",
+        
+        # Minimal information
+        """Guest: Alice Johnson
+        Date: 20/04/2024
+        Pick up from: Central Station
+        Reference: REF456"""
+    ]
