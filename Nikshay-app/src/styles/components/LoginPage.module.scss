@@ -1,0 +1,283 @@
+// Container
+.loginContainer {
+  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #EDF4FF 0%, #F5F9FF 100%);
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+// Login Box
+.loginBox {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  text-align: center;
+  position: relative;
+  margin: 1.5rem;
+  z-index: 1;
+}
+
+// Logo
+.logo {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: white;
+  }
+}
+
+// Typography
+h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 2rem;
+  padding: 0 0.75rem;
+}
+
+// Form
+.form {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.errorMessage {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.inputGroup {
+  margin-bottom: 1rem;
+
+  &:last-of-type {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+
+  &:focus-within {
+    background: #f0f0f0;
+  }
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  color: #999;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+input {
+  width: 100%;
+  height: 44px;
+  padding: 0 2.75rem;
+  background: transparent;
+  border: none;
+  color: #1a1a1a;
+  font-size: 0.875rem;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: #666;
+  }
+}
+
+.forgotPassword {
+  display: block;
+  text-align: right;
+  font-size: 0.813rem;
+  color: #666;
+  text-decoration: none;
+  margin: -0.25rem 0 1.25rem;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #1a1a1a;
+  }
+}
+
+// Buttons
+.submitButton {
+  width: 100%;
+  height: 44px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #000;
+  }
+}
+
+// Divider
+.divider {
+  text-align: center;
+  color: #999;
+  font-size: 0.813rem;
+  margin: 1.5rem 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  span {
+    position: relative;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 0 0.75rem;
+  }
+}
+
+// Social Buttons
+.socialButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.socialButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #1a1a1a;
+  }
+
+  &:hover {
+    background: #f8f8f8;
+    transform: translateY(-1px);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+// Hint
+.hint {
+  margin-top: 1.5rem;
+  color: #999;
+  font-size: 0.813rem;
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .loginContainer {
+    padding: 1rem;
+  }
+
+  .loginBox {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.125rem;
+  }
+
+  .subtitle {
+    font-size: 0.813rem;
+    padding: 0 0.5rem;
+  }
+}
+
+// High-contrast mode support
+@media (forced-colors: active) {
+  .loginBox {
+    border: 1px solid CanvasText;
+  }
+
+  .inputWrapper {
+    border: 1px solid CanvasText;
+  }
+
+  .submitButton {
+    border: 1px solid ButtonText;
+  }
+} 

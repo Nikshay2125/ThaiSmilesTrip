@@ -1,0 +1,32 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - var(--header-height));
+  overflow: hidden; /* Contain children overflow */
+}
+
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--sidebar-transition);
+  padding-top: var(--header-height);
+  min-height: 100vh;
+  width: calc(100% - var(--sidebar-width));
+  background-color: #f8fafc;
+  overflow-y: auto; /* Allow vertical scrolling only when needed */
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+.mainFull {
+  margin-left: 0;
+  width: 100%;
+} 

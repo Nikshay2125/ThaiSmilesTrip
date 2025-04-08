@@ -1,0 +1,132 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base HTML elements */
+html {
+  font-size: 16px;
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  color: #111827;
+  background-color: #F3F4F6;
+  min-height: 100%;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Root container */
+#root {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Form elements */
+input, 
+button, 
+textarea, 
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* CSS Variables */
+:root {
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 0;
+  --sidebar-transition: 0.3s ease;
+  
+  --color-text: #111827;
+  --color-text-secondary: #6B7280;
+  --color-border: #E5E7EB;
+  --color-background: #F9FAFB;
+  --color-primary: #3B82F6;
+  --color-facebook: #1877f2;
+  --color-success: #28a745;
+  --color-danger: #ef4444;
+  --color-warning: #f97316;
+  --color-info: #3b82f6;
+}
+
+/* Remove auto-fill background color in Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #F9FAFB inset;
+  -webkit-text-fill-color: #111827;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Remove default iOS styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+/* Common layout fixes */
+.container, 
+.wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Accessibility - focus styles */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Improve button tap targets on mobile */
+@media (max-width: 480px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  html {
+    font-size: 15px; /* Slightly smaller base font on mobile */
+  }
+} 
