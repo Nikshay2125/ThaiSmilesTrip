@@ -1,0 +1,140 @@
+{
+  "REQ_20250409_200716_0": {
+    "id": "REQ_20250409_200716_0",
+    "email_data": {
+      "id": "1961afbcc3fd77a4",
+      "subject": "booking",
+      "from": "Abhijeet Kumar <abhijeet.kumar7982@gmail.com>",
+      "date": "Wed, 9 Apr 2025 20:06:58 +0530",
+      "body": "Hello, this is a booking confirmation for John Smith.\r\n        He will be arriving on March 15th, 2024 on flight BA789.\r\n        Please arrange pickup from Heathrow Airport at 2:30 PM.\r\n        There will be 3 people in total. They'll be staying at the Ritz\r\nHotel.\r\n        Booking reference: BOOK123.\r\n"
+    },
+    "status": "confirmed",
+    "created_at": "2025-04-09T20:07:16.327601",
+    "confirmation_sent": true,
+    "confirmation": true,
+    "processed_data": {
+      "date": "15 Mar 2024",
+      "guest_name": "John Smith",
+      "pax": 3,
+      "flight_no": "BA789",
+      "pickup_time": "02:30 PM",
+      "pickup_location": "Heathrow Airport",
+      "hotel_drop": "The Ritz Hotel"
+    }
+  },
+  "REQ_20250409_200955_1": {
+    "id": "REQ_20250409_200955_1",
+    "email_data": {
+      "id": "1961afe0b5b3025d",
+      "subject": "Booking",
+      "from": "Abhijeet Kumar <abhijeet.kumar7982@gmail.com>",
+      "date": "Wed, 9 Apr 2025 20:09:26 +0530",
+      "body": "DATE:- 04 FEB\r\n        GUEST NAME : GUNJAN KEDAWAT\r\n        PAX:- 01\r\n        Flights no:- 6E 6568\r\n        PICKUP TIME : 11.00 AM\r\n        HOTEL DROP : centara grand central ladprao Bangkok\r\n        PICKUP : BKK AIRPORT\r\n        Code - 29\r\n"
+    },
+    "status": "confirmed",
+    "created_at": "2025-04-09T20:09:55.407679",
+    "confirmation_sent": true,
+    "confirmation": true,
+    "processed_data": {
+      "date": "04 Feb 2024",
+      "guest_name": "Gunjan Kedawat",
+      "pax": 1,
+      "flight_no": "6E 6568",
+      "pickup_time": "11:00 AM",
+      "pickup_location": "BKK Airport",
+      "hotel_drop": "Centara Grand Central Ladprao Bangkok"
+    }
+  },
+  "REQ_20250410_191448_2": {
+    "id": "REQ_20250410_191448_2",
+    "email_data": {
+      "id": "1961ff1e0c5a3034",
+      "subject": "Booking",
+      "from": "Abhijeet Kumar <abhijeet.kumar7982@gmail.com>",
+      "date": "Thu, 10 Apr 2025 19:14:13 +0530",
+      "body": "Hello, this is a booking confirmation for John Smith.\r\n        He will be arriving on March 15th, 2024 on flight BA789.\r\n        Please arrange pickup from Heathrow Airport at 2:30 PM.\r\n        There will be 3 people in total. They'll be staying at the Ritz\r\nHotel.\r\n        Booking reference: BOOK123.\r\n"
+    },
+    "status": "confirmed",
+    "created_at": "2025-04-10T19:14:48.387119",
+    "confirmation_sent": true,
+    "confirmation": true,
+    "processed_data": {
+      "date": "15 Mar 2024",
+      "guest_name": "John Smith",
+      "pax": 3,
+      "flight_no": "BA789",
+      "pickup_time": "02:30 PM",
+      "pickup_location": "Heathrow Airport",
+      "hotel_drop": "The Ritz Hotel"
+    }
+  },
+  "REQ_20250410_204338_3": {
+    "id": "REQ_20250410_204338_3",
+    "email_data": {
+      "id": "1962043762a7cf75",
+      "subject": "Booking",
+      "from": "Abhijeet Kumar <abhijeet.kumar7982@gmail.com>",
+      "date": "Thu, 10 Apr 2025 20:43:20 +0530",
+      "body": "Hello, this is a booking confirmation for John Smith. He will be arriving\r\non March 15th, 2024 on flight BA789. Please arrange pickup from Heathrow\r\nAirport at 2:30 PM. There will be 3 people in total. They'll be staying at\r\nthe Ritz Hotel. Booking reference: BOOK123.\r\n"
+    },
+    "status": "processed",
+    "created_at": "2025-04-10T20:43:38.256469",
+    "confirmation_sent": false,
+    "confirmation": false,
+    "processed_data": {
+      "date": "15 Mar 2024",
+      "guest_name": "John Smith",
+      "pax": 3,
+      "flight_no": "BA789",
+      "pickup_time": "02:30 PM",
+      "pickup_location": "Heathrow Airport",
+      "hotel_drop": "The Ritz Hotel"
+    }
+  },
+  "REQ_20250410_205229_4": {
+    "id": "REQ_20250410_205229_4",
+    "email_data": {
+      "id": "196204b438485c19",
+      "subject": "booking -2",
+      "from": "\"info@thaismilestrip.com\" <info@thaismilestrip.com>",
+      "date": "Thu, 10 Apr 2025 15:22:01 +0000 (UTC)",
+      "body": "16 Apr\r\n\r\nMr. rajKumar\r\nPax 4\r\n\r\nSiam Bayshore Resort Pattaya\r\nTo\r\nRamada by Wyndham DMA Bangkok\r\n\r\nPick Time. 12:00 pm\r\n"
+    },
+    "status": "confirmed",
+    "created_at": "2025-04-10T20:52:29.859726",
+    "confirmation_sent": true,
+    "confirmation": true,
+    "processed_data": {
+      "date": "16 Apr 2024",
+      "guest_name": "Rajkumar",
+      "pax": 4,
+      "flight_no": null,
+      "pickup_time": "12:00 PM",
+      "pickup_location": "Siam Bayshore Resort Pattaya",
+      "hotel_drop": "Ramada by Wyndham DMA Bangkok"
+    }
+  },
+  "REQ_20250410_205335_5": {
+    "id": "REQ_20250410_205335_5",
+    "email_data": {
+      "id": "196204c2b56c4767",
+      "subject": "Re: booking -2",
+      "from": "\"info@thaismilestrip.com\" <info@thaismilestrip.com>",
+      "date": "Thu, 10 Apr 2025 15:23:00 +0000 (UTC)",
+      "body": "Dear Reservation,\r\n\r\nPlease Book\u2026... *SAFARI (INDIAN) - SIC*\r\n\r\nDATE               :     15/04/2025\r\n\r\nNAME              :      Mr. Nagesh Chawhan Togyanaik\r\n\r\n\r\nPAX                 :      02 Adults\r\n\r\nHOTEL             :       Bangkok Palace Hotel\r\n\r\nCONTACT         :      \u200eTBA\r\n\r\nPAYMENT         :      TRANSFER BANK\r\n\r\nOn Thu, Apr 10, 2025 at 10:21\u202fPM info@thaismilestrip.com <\r\ninfo@thaismilestrip.com> wrote:\r\n\r\n> 16 Apr\r\n>\r\n> Mr. rajKumar\r\n> Pax 4\r\n>\r\n> Siam Bayshore Resort Pattaya\r\n> To\r\n> Ramada by Wyndham DMA Bangkok\r\n>\r\n> Pick Time. 12:00 pm\r\n>\r\n"
+    },
+    "status": "confirmed",
+    "created_at": "2025-04-10T20:53:35.359252",
+    "confirmation_sent": true,
+    "confirmation": true,
+    "processed_data": {
+      "date": "15 Apr 2025",
+      "guest_name": "Nagesh Chawhan Togyanaik",
+      "pax": 2,
+      "flight_no": null,
+      "pickup_time": null,
+      "pickup_location": null,
+      "hotel_drop": "Bangkok Palace Hotel"
+    }
+  }
+}

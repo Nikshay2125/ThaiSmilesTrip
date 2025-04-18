@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook, FaApple } from 'react-icons/fa';
@@ -6,7 +6,7 @@ import styles from '../../styles/components/LoginPage.module.scss';
 import AuthService from '../../services/AuthService';
 
 interface LoginPageProps {
-  onLogin: (email: string, password: string) => boolean;
+  onLogin: (email: string, password: string) => Promise<boolean>;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
@@ -16,41 +16,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check for token in URL (when returning from OAuth)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    
-    if (token) {
-      // Process the token
-      AuthService.handleAuthCallback(token);
-      
-      // Remove token from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      
-      // Trigger login in parent component
-      onLogin('', '');
-    }
-  }, [onLogin]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
     
     try {
-      // Use AuthService for login
-      const success = await AuthService.login(email, password);
+      const success = await onLogin(email, password);
       
       if (!success) {
         setError('Invalid credentials. Try admin@example.com / admin123');
-      } else {
-        // Call parent component's onLogin to update app state
-        onLogin(email, password);
       }
     } catch (error) {
-      setError('Login failed. Please try again later.');
       console.error('Login error:', error);
+      setError('Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -59,11 +38,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const handleGoogleLogin = async () => {
     try {
       setIsLoading(true);
+      setError('');
       await AuthService.loginWithGoogle();
-      // Redirect happens in the service
-    } catch (error) {
-      setError('Google login failed. Please try again later.');
-      console.error('Google login error:', error);
+      // No need to do anything after the redirect - browser will navigate away
+    } catch (err) {
+      console.error('Google login error:', err);
+      setError('Failed to connect with Google. Please try again.');
       setIsLoading(false);
     }
   };
@@ -75,9 +55,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           <FiLogIn />
         </div>
 
-        <h1>Sign in to Dashboard</h1>
+        <h1>Sign in with email</h1>
         <p className={styles.subtitle}>
-          Manage booking requests and email confirmations
+          Make a new doc to bring your words, data,
+          and teams together. For free
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -92,7 +73,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
               />
             </div>
           </div>
@@ -106,14 +86,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
               />
               <button
                 type="button"
                 className={styles.passwordToggle}
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                disabled={isLoading}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -124,12 +102,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             Forgot password?
           </a>
 
-          <button 
-            type="submit" 
-            className={styles.submitButton}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+          <button type="submit" className={styles.submitButton} disabled={isLoading}>
+            Get Started
           </button>
         </form>
 
@@ -147,20 +121,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           >
             <FcGoogle />
           </button>
-          <button 
-            type="button" 
-            className={styles.socialButton} 
-            aria-label="Sign in with Facebook"
-            disabled={isLoading || true} // Disabled until implemented
-          >
+          <button type="button" className={styles.socialButton} aria-label="Sign in with Facebook" disabled={isLoading}>
             <FaFacebook />
           </button>
-          <button 
-            type="button" 
-            className={styles.socialButton} 
-            aria-label="Sign in with Apple"
-            disabled={isLoading || true} // Disabled until implemented
-          >
+          <button type="button" className={styles.socialButton} aria-label="Sign in with Apple" disabled={isLoading}>
             <FaApple />
           </button>
         </div>

@@ -1,12 +1,11 @@
 import axios from 'axios';
-import RequestService from './RequestService';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:5000';
 
 interface UserInfo {
   sub: string;  // email
   name: string;
-  picture?: string;
+  picture?: string | null;
   exp?: number;
 }
 
@@ -25,6 +24,25 @@ class AuthService {
         console.error('Failed to parse user info from localStorage');
       }
     }
+
+    // Check for token in URL parameters (for OAuth callback)
+    if (!this.token) {
+      this.checkUrlForToken();
+    }
+  }
+
+  checkUrlForToken() {
+    // Extract token from URL if present (for OAuth callback)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      this.handleAuthCallback(token);
+      
+      // Clean URL by removing token parameter
+      const url = new URL(window.location.href);
+      url.searchParams.delete('token');
+      window.history.replaceState({}, document.title, url.href);
+    }
   }
 
   async login(email: string, password: string): Promise<boolean> {
@@ -42,10 +60,10 @@ class AuthService {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('adminName', 'Admin');
       
-      return true;
+      return Promise.resolve(true);
     }
     
-    return false;
+    return Promise.resolve(false);
   }
 
   async loginWithGoogle(): Promise<void> {
@@ -55,7 +73,12 @@ class AuthService {
       const { auth_url } = response.data;
       
       // Redirect to Google login
-      window.location.href = auth_url;
+      if (auth_url) {
+        console.log('Redirecting to Google auth URL:', auth_url);
+        window.location.href = auth_url;
+      } else {
+        throw new Error('No auth URL returned from server');
+      }
     } catch (error) {
       console.error('Failed to initiate Google login', error);
       throw error;
@@ -71,6 +94,9 @@ class AuthService {
       // Decode JWT to get user info (basic decode, no verification)
       try {
         const base64Url = token.split('.')[1];
+        if (!base64Url) {
+          throw new Error('Invalid token format');
+        }
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(
           atob(base64)
@@ -79,15 +105,16 @@ class AuthService {
             .join('')
         );
         
-        this.user = JSON.parse(jsonPayload);
-        localStorage.setItem('user_info', JSON.stringify(this.user));
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('adminName', this.user.name);
+        const decodedUser = JSON.parse(jsonPayload) as UserInfo;
+        this.user = decodedUser;
         
-        // Start email monitoring automatically
-        RequestService.startMonitor().catch(err => {
-          console.error('Failed to start email monitor:', err);
-        });
+        if (decodedUser && decodedUser.sub) {
+          localStorage.setItem('user_info', JSON.stringify(decodedUser));
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('adminName', decodedUser.name || decodedUser.sub);
+        } else {
+          throw new Error('Invalid user data in token');
+        }
       } catch (e) {
         console.error('Failed to decode JWT token', e);
       }
@@ -129,7 +156,7 @@ class AuthService {
   // Method to get axios instance with auth headers
   getAuthAxios() {
     const instance = axios.create({
-      baseURL: API_URL,
+      baseURL: `${API_URL}/api`,
       headers: {
         'Content-Type': 'application/json'
       }

@@ -32,7 +32,7 @@ export interface Request {
   status: 'pending' | 'confirmed' | 'rejected';
   created_at: string;
   confirmation_sent: boolean;
-  confirmation: boolean;
+  user_email: string;
 }
 
 // Callback types for socket events
@@ -48,6 +48,9 @@ class RequestService {
     newRequests: [],
     requestUpdated: []
   };
+  
+  // Add property to store the last error message
+  public lastCheckErrorMessage: string | null = null;
 
   constructor() {
     // Initialize socket connection
@@ -55,16 +58,58 @@ class RequestService {
   }
 
   private initSocket() {
-    // Create socket connection
-    this.socket = io('http://localhost:5000');
+    // Create socket connection with reconnection options
+    this.socket = io('http://localhost:5000', {
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000
+    });
 
     // Setup event listeners
     this.socket.on('connect', () => {
       console.log('Socket connected');
+      // Add auth token to socket connection
+      const token = AuthService.getToken();
+      if (token && this.socket) {
+        this.socket.emit('authenticate', { token });
+      }
     });
 
-    this.socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+    this.socket.on('disconnect', (reason) => {
+      console.log(`Socket disconnected: ${reason}`);
+      if (reason === 'io server disconnect') {
+        // The server has forcefully disconnected the socket
+        // Try to reconnect manually
+        console.log('Attempting to reconnect...');
+        this.socket?.connect();
+      }
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
+
+    this.socket.on('reconnect', (attemptNumber) => {
+      console.log(`Socket reconnected after ${attemptNumber} attempts`);
+      // Re-authenticate on reconnection
+      const token = AuthService.getToken();
+      if (token && this.socket) {
+        this.socket.emit('authenticate', { token });
+      }
+    });
+
+    this.socket.on('reconnect_attempt', (attemptNumber) => {
+      console.log(`Socket reconnection attempt ${attemptNumber}`);
+    });
+
+    this.socket.on('reconnect_error', (error) => {
+      console.error('Socket reconnection error:', error);
+    });
+
+    this.socket.on('reconnect_failed', () => {
+      console.error('Socket reconnection failed');
     });
 
     // Listen for new requests
@@ -78,6 +123,9 @@ class RequestService {
       console.log(`Request ${request.id} was updated`);
       this.callbacks.requestUpdated.forEach(callback => callback(request));
     });
+    
+    // Setup reload listener
+    this.setupReloadListener();
   }
 
   // Add event listeners
@@ -98,13 +146,39 @@ class RequestService {
     this.callbacks.requestUpdated = this.callbacks.requestUpdated.filter(cb => cb !== callback);
   }
 
+  // Add socket event for reload_data
+  setupReloadListener() {
+    if (this.socket) {
+      this.socket.on('reload_data', () => {
+        console.log('Received reload_data event, fetching latest requests');
+        // Use a try-catch block to handle potential errors
+        try {
+          this.getAllRequests()
+            .then(requests => {
+              console.log(`Reloaded ${requests.length} requests`);
+              if (Array.isArray(requests)) {
+                this.callbacks.newRequests.forEach(callback => callback(requests));
+              } else {
+                console.error('Unexpected response format from getAllRequests:', requests);
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching requests on reload_data:', error);
+            });
+        } catch (error) {
+          console.error('Error in reload_data handler:', error);
+        }
+      });
+    }
+  }
+
   // API Methods
   async getAllRequests(status?: string): Promise<Request[]> {
     try {
       const axios = AuthService.getAuthAxios();
       const params = status ? { status } : {};
       const response = await axios.get('/requests', { params });
-      return response.data;
+      return response.data || [];
     } catch (error) {
       console.error('Error fetching requests:', error);
       return [];
@@ -147,10 +221,30 @@ class RequestService {
   async checkEmails(): Promise<Request[]> {
     try {
       const axios = AuthService.getAuthAxios();
+      console.log('Sending request to check emails...');
       const response = await axios.post('/emails/check');
+      console.log('Email check response:', response.data);
+      
+      // Store error message if any
+      this.lastCheckErrorMessage = response.data.message || null;
+      
+      // If all_requests is provided, use it instead of just new_requests
+      if (response.data.all_requests && Array.isArray(response.data.all_requests)) {
+        console.log(`Received all ${response.data.all_requests.length} requests from email check`);
+        // Notify listeners about ALL requests - wrap in try-catch to prevent crashes
+        try {
+          this.callbacks.newRequests.forEach(callback => callback(response.data.all_requests));
+        } catch (error) {
+          console.error('Error notifying callbacks about all_requests:', error);
+        }
+        return response.data.new_requests || [];
+      }
+      
       return response.data.new_requests || [];
     } catch (error) {
       console.error('Error checking emails:', error);
+      this.lastCheckErrorMessage = 'Failed to connect to server';
+      // Return empty array instead of throwing
       return [];
     }
   }
@@ -166,7 +260,7 @@ class RequestService {
     }
   }
 
-  async exportSpreadsheet(status?: string): Promise<void> {
+  async exportSpreadsheet(status?: string): Promise<boolean> {
     try {
       const axios = AuthService.getAuthAxios();
       const params = status ? { status } : {};
@@ -203,9 +297,11 @@ class RequestService {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
       
+      return true;
     } catch (error) {
       console.error('Error exporting spreadsheet:', error);
       alert('Failed to export spreadsheet. Please try again later.');
+      return false;
     }
   }
   
