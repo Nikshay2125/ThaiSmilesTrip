@@ -1,0 +1,24 @@
+{
+  "check_interval": 30,
+  "email_filter": "newer_than:2d -in:chats -from:me subject:(booking OR reservation OR confirmation OR pickup OR transfer OR arrival OR itinerary)",
+  "custom_schema": {
+    "date": "DD MMM YYYY formatted date",
+    "guest_name": "Full name of the guest",
+    "pax": "Number of guests/people (integer)",
+    "flight_no": "Flight number if available",
+    "pickup_time": "Time in HH:MM AM/PM format",
+    "pickup_location": "Location for pickup",
+    "hotel_drop": "Hotel or drop-off location"
+  },
+  "subject_keywords": [
+    "booking", "reservation", "confirmation", "pickup", 
+    "airport", "transfer", "arrival", "hotel", "travel", 
+    "itinerary", "guest"
+  ],
+  "relevance_keywords": [
+    "booking", "reservation", "confirmation", "hotel", 
+    "guest", "pickup", "transfer", "airport", "flight",
+    "arrival", "traveler", "package", "itinerary", "transport"
+  ],
+  "max_results": 10
+}

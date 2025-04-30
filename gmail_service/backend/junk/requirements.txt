@@ -1,0 +1,13 @@
+groq==0.21.0
+langchain-groq==0.3.1
+google-api-python-client==2.107.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.0.0
+httpx==0.24.1
+pymongo==4.6.2
+python-dotenv==1.0.1
+flask==2.3.3
+flask-cors==4.0.0
+PyJWT==2.8.0
+pandas==2.1.0
+openpyxl==3.1.2 
